@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -11,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -81,5 +83,19 @@ public class MainActivity extends AppCompatActivity {
 
         // Liking the RecyclerView with the Adapter
         recyclerView.setAdapter(myAdapter);
+
+        // swipe to delete
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                Contacts c = contactsArrayList.get(viewHolder.getAdapterPosition());
+                viewModel.deleteContact(c);
+            }
+        }).attachToRecyclerView(recyclerView);
     }
 }
